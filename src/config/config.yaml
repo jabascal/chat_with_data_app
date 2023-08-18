@@ -1,0 +1,46 @@
+
+# https://en.wikipedia.org/wiki/Lyon# OpenAI API key
+openai:
+  path_file_key: /home/jabascal/Projects/openai
+  name_file_key: openai_key.json 
+
+# LLM
+llm:
+  llm_name: &llm_name gpt-3.5-turbo
+  temperature: 0.7
+
+# Data document
+#  doc_type: url 
+#  doc_path: https://en.wikipedia.org/wiki/Cinque_Terre
+#  https://en.wikipedia.org/wiki/C%C3%A9sar_Manrique
+# https://en.wikipedia.org/wiki/Lyon
+#
+#  doc_type: pdf 
+#  doc_path: ../data/Tan_EfficientDetScalableEfficientObjectDetection20.pdf
+#
+#  doc_type: youtube 
+#  doc_path: https://www.youtube.com/watch?v=PNVgh4ZSjCw
+doc:
+  doc_type: url # pdf, url or youtube
+  doc_path: https://en.wikipedia.org/wiki/Lyon
+  chunk_size: 1500
+  chunk_overlap: 150
+
+# Data base
+db:
+  mode_input: file              # Mode read: file or db 
+  persist_path: ./docs/chroma   # Persist path to save vector database
+  similarit_on: False           # Similarity check: Find similar documents
+  question_k: 3                 # Parameters to find relevant documents
+
+chat:
+  qa_on: True                   # Ask questions to the user
+  qa_chain_type: refine         # map_reduce or map_rerank or refine
+  chat_examples:
+    - Start with 'Summarize the document'
+    - What are best tourist attractions?
+  chat_description: !join ["Ask questions about your data to ", *llm_name]
+  share_gradio: False            # Share: get public link
+
+image:
+  image_path: https://drive.google.com/uc?id=1HDnBsdfUYrCHOFtP2-DqomcmBSs9XyNI
