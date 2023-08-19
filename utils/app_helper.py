@@ -79,8 +79,8 @@ def chat_to_your_data_ui(openai_api_key, doc_type, doc_path, chunk_size, chunk_o
             gr.Markdown(
             """
             ## Provide OpenAI API key   
-            You need to provide an OpenAI API key to use the chatbot. You can create an account and get one [here](https://platform.openai.com/docs/api-reference/authentication/).  
-            Delete the key after using the chatbot (this will set openai.api_key=None) !!!
+            You need to provide an OpenAI API key to use the chatbot. You can create an account and get a key [here](https://platform.openai.com/docs/api-reference/authentication/).  
+            **Delete the key after using the chatbot !!!** (this will set openai.api_key=None) 
             """, scale=1
             )
             with gr.Row():
