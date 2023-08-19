@@ -1,5 +1,5 @@
 
-# https://en.wikipedia.org/wiki/Lyon# OpenAI API key
+# OpenAI API key
 openai:
   path_file_key: 
   name_file_key: #openai_key.json 

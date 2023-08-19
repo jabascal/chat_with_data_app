@@ -10,7 +10,7 @@ pinned: false
 license: mit
 ---
 
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+Test on Hugging Face Spaces [Chat With Data App](https://huggingface.co/spaces/abascal/chat_with_data_app)
 
 # Chat with data app
 Chatbot app to chat with any source of data (doc, URL, audio, ...) leveraging LLMs and LangChain. Current version has the following feautures:

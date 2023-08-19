@@ -1,62 +1,57 @@
+import openai
 import gradio as gr
 from utils.langchain_helper import init_embedding, read_split_doc, create_db_from_documents, init_llm_qa_chain
-
-    
-# ----------------------------------------------------------------------------
-# Interface functionality
-
-# Init the LLM and read document
-def init_read_doc(doc_type, doc_path, chunk_size, chunk_overlap, llm_name, temperature, openai_api_key):
-    global qa_chain
-    # Init embedding
-    print(f"key {openai_api_key}")
-    embedding = init_embedding(openai_api_key=openai_api_key)
-
-    # Read and split document using langchain
-    print(f"Reading document {doc_path} of type {doc_type} ...")
-    docs_split = read_split_doc(doc_type, doc_path, chunk_size, chunk_overlap)
-    # -------------------------
-    # Create vector database from data    
-    db = create_db_from_documents(docs_split, embedding)
-    # -------------------------
-    # Init the LLM and qa chain
-    llm, qa_chain, memory = init_llm_qa_chain(llm_name, temperature, openai_api_key, db)            
-
-# ------------------------
-# When reading the document
-def reading_doc_msg(doc_type, doc_path):
-    return f"Reading document {doc_path} of type {doc_type} ..."
-def read_doc_msg():
-    return "Finished reading the document! Let's chat!"
-def clear_chatbot():            
-    return "", ""
-
-# -------------------------
-# When question 
-def qa_input_msg_history(question, chat_history):
-    # QA function that inputs the answer and the history.
-    # History managed internally by ChatInterface            
-    answer = qa_chain({"question": question})['answer']
-    #response = qa_chain({"question": input})
-    chat_history.append((question, answer))
-    return "", chat_history
-
-# When set OpenAI API key : read from text box
-def read_key_from_textbox(openai_api_key):    
-    try: 
-        import openai
-        from utils.openai_helper import get_completion
-        openai.api_key = openai_api_key    
-        response = get_completion("test", model='gpt-3.5-turbo')
-        print(f"key {openai.api_key}")
-        return "OpenAI API key set!"            
-    except:
-        return "OpenAI API key not valid!"
 
 # ----------------------------------------------------------------------------
 # Gradio Interface
 def chat_to_your_data_ui(openai_api_key, doc_type, doc_path, chunk_size, chunk_overlap,
-                         llm_name, temperature, share_gradio, image_path):
+                         llm_name, temperature, share_gradio, image_path):    
+    # ----------------------------------------------------------------------------
+    # Interface functionality
+    # ------------------------
+    # When set OpenAI API key : read from text box
+    def read_key_from_textbox(openai_api_key):    
+        try: 
+            from utils.openai_helper import get_completion
+            openai.api_key = openai_api_key    
+            response = get_completion("test", model='gpt-3.5-turbo')
+            return "OpenAI API key set!"            
+        except:
+            return "OpenAI API key not valid!"
+    # ------------------------
+    # When reading the document
+    def reading_doc_msg(doc_type, doc_path):
+        return f"Reading document {doc_path} of type {doc_type} ..."
+    def read_doc_msg():
+        return "Finished reading the document! Let's chat!"
+    def clear_chatbot_after_read_doc():            
+        return "", ""
+    # -------------------------
+    # Init the LLM and read document
+    def init_read_doc(doc_type, doc_path, chunk_size, chunk_overlap, temperature):
+        global qa_chain
+        # Init embedding
+        embedding = init_embedding(openai.api_key)
+
+        # Read and split document using langchain
+        print(f"Reading document {doc_path} of type {doc_type} ...")
+        docs_split = read_split_doc(doc_type, doc_path, chunk_size, chunk_overlap)
+        # -------------------------
+        # Create vector database from data    
+        db = create_db_from_documents(docs_split, embedding)
+        # -------------------------
+        # Init the LLM and qa chain
+        llm, qa_chain, memory = init_llm_qa_chain(llm_name, temperature, openai.api_key, db)            
+
+    # When question 
+    def qa_input_msg_history(question, chat_history):
+        # QA function that inputs the answer and the history.
+        # History managed internally by ChatInterface       
+        answer = qa_chain({"question": question})['answer']
+        #response = qa_chain({"question": input})
+        chat_history.append((question, answer))
+        return "", chat_history    
+    # ----------------------------------------------------------------------------
     # UI
     with gr.Blocks(theme=gr.themes.Glass()) as demo:
         # Description            
@@ -64,7 +59,7 @@ def chat_to_your_data_ui(openai_api_key, doc_type, doc_path, chunk_size, chunk_o
         """
         # Chat to your data
         Ask questions to the chatbot about your document. The chatbot will find the answer to your question. 
-        You can modify the document type and provide its path/link. A document has been preselected. 
+        You can modify the document type and provide its path/link. 
         You may also modify some of the advanced options.     
 
         """)
@@ -129,7 +124,7 @@ def chat_to_your_data_ui(openai_api_key, doc_type, doc_path, chunk_size, chunk_o
         gr.Markdown(
         """
         ## Select document
-        Select the document type and provide its path/link. A document has been preselected.
+        Select the document type and provide its path/link (eg. https://en.wikipedia.org/wiki/Lyon).
         """)
         with gr.Row():
             drop_type = gr.Dropdown(["url", "pdf", "youtube"], 
@@ -167,8 +162,8 @@ def chat_to_your_data_ui(openai_api_key, doc_type, doc_path, chunk_size, chunk_o
 
         
         # Init the LLM and read document with default parameters (if API key is provided)
-        if openai_api_key is not None:            
-            init_read_doc(doc_type, doc_path, chunk_size, chunk_overlap, llm_name, temperature, openai_api_key)
+        #if openai_api_key is not None:            
+        #    init_read_doc(doc_type, doc_path, chunk_size, chunk_overlap, llm_name, temperature, openai_api_key)
         # -------------------------
         # When read document (aready read with default parameters)
         btn_read.click(reading_doc_msg,                                         # Reading message 
@@ -176,10 +171,10 @@ def chat_to_your_data_ui(openai_api_key, doc_type, doc_path, chunk_size, chunk_o
                             outputs=text_read_output).then(init_read_doc,   # Init qa chain and read document
                                 inputs=[drop_type, text_path, 
                                         num_chunk_size, num_chunk_overlap,
-                                        sl_temperature, text_openai_api_key], 
+                                        sl_temperature], 
                                 queue=False).then(read_doc_msg,             # Finished reading message
-                                        outputs=text_read_output).then(clear_chatbot, # Clear chatbot
-                                                outputs=[chatbot, msg], queue=False)        
+                                        outputs=text_read_output).then(clear_chatbot_after_read_doc, # Clear chatbot
+                                                outputs=[chatbot, msg], queue=False)  
         # -------------------------
         # When question 
         msg.submit(qa_input_msg_history, 
@@ -192,20 +187,3 @@ def chat_to_your_data_ui(openai_api_key, doc_type, doc_path, chunk_size, chunk_o
     demo.launch(share=share_gradio)
 
 
-# ----------------------------------------------------------------------------
-# Simple Gradio chat interface
-def chat_interface(chat_examples, chat_description, qa_chain, share_gradio):
-    def qa_input_msg_history(input, history, temperature):
-        # QA function that inputs the answer and the history.
-        # History managed internally by ChatInterface
-        #answer = qa_answer(input)
-        answer = qa_chain({"question": input})['answer']
-        return answer
-
-    demo = gr.ChatInterface(fn=qa_input_msg_history, 
-                    title="Chat to your data",
-                    description=chat_description,
-                    examples=chat_examples,
-                    retry_btn=None,
-                    undo_btn=None,
-                    ).launch(share=share_gradio)
