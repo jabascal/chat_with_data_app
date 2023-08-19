@@ -18,6 +18,7 @@ def chat_to_your_data_ui(openai_api_key, doc_type, doc_path, chunk_size, chunk_o
             return "OpenAI API key set!"            
         except:
             return "OpenAI API key not valid!"
+    
     # ------------------------
     # When reading the document
     def reading_doc_msg(doc_type, doc_path):
@@ -51,6 +52,15 @@ def chat_to_your_data_ui(openai_api_key, doc_type, doc_path, chunk_size, chunk_o
         #response = qa_chain({"question": input})
         chat_history.append((question, answer))
         return "", chat_history    
+    
+    # When clear all (OpenAI API key, document, chatbot)
+    def clear_all():
+        global qa_chain, db
+        openai.api_key = None
+        qa_chain = None
+        db = None
+        return "OpenAI API key cleared!", "Document cleared!", "", "", "", ""
+
     # ----------------------------------------------------------------------------
     # UI
     with gr.Blocks(theme=gr.themes.Glass()) as demo:
@@ -69,13 +79,15 @@ def chat_to_your_data_ui(openai_api_key, doc_type, doc_path, chunk_size, chunk_o
             gr.Markdown(
             """
             ## Provide OpenAI API key   
+            You need to provide an OpenAI API key to use the chatbot. You can create an account and get one [here](https://platform.openai.com/docs/api-reference/authentication/).  
+            Delete the key after using the chatbot (this will set openai.api_key=None) !!!
             """, scale=1
             )
             with gr.Row():
-                text_openai_api_key = gr.Textbox(label="OpenAI API key", placeholder="Provide OpenAI API key!", scale=3)
+                text_openai_api_key = gr.Textbox(label="OpenAI API key", placeholder="Provide OpenAI API key!", scale=4)
                 btn_openai_api_key = gr.Button("Set OpenAI API key", scale=1)
                 text_openai_api_key_output = gr.Textbox(label="Reading state", interactive=False, 
-                                              placeholder="OpenAI API key not provided!", scale=1)
+                                              placeholder="OpenAI API key not provided!", scale=2)
             # -------------------------    
             # When set OpenAI API key : read from text box
             btn_openai_api_key.click(read_key_from_textbox, 
@@ -85,7 +97,7 @@ def chat_to_your_data_ui(openai_api_key, doc_type, doc_path, chunk_size, chunk_o
         # -------------------------
         # Parameters and chatbot image
         with gr.Row():
-            with gr.Column():
+            with gr.Column(scale=2):
                 # -------------------------
                 # Parameters
                 # Temperature and document type
@@ -158,9 +170,8 @@ def chat_to_your_data_ui(openai_api_key, doc_type, doc_path, chunk_size, chunk_o
         msg = gr.Textbox(label="Question")
         
         # Clear button
-        clear = gr.Button("Clear")
+        clear = gr.Button("Clear all (API key, document, chatbot))")
 
-        
         # Init the LLM and read document with default parameters (if API key is provided)
         #if openai_api_key is not None:            
         #    init_read_doc(doc_type, doc_path, chunk_size, chunk_overlap, llm_name, temperature, openai_api_key)
@@ -182,7 +193,11 @@ def chat_to_your_data_ui(openai_api_key, doc_type, doc_path, chunk_size, chunk_o
                      outputs=[msg, chatbot], queue=False)#.then(bot, chatbot, chatbot)
         
         # When clear
-        clear.click(lambda: None, None, chatbot, queue=False)
+        clear.click(clear_all, 
+                    outputs=[text_openai_api_key_output, text_read_output, 
+                             chatbot, msg, text_openai_api_key, text_path], queue=False)
+
+        
     #demo.queue() # To use generator, required for streaming intermediate outputs
     demo.launch(share=share_gradio)
 
