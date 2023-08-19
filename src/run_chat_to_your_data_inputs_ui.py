@@ -32,7 +32,7 @@ config_file = "config/config.yaml"
 # Load config file 
 param = load_config(config_file)
 
-def chat_to_your_data(param):
+def main(param):
     # PARAMETERS
     #
     # OpenAI API KEY
@@ -64,4 +64,4 @@ def chat_to_your_data(param):
                          llm_name, temperature, share_gradio, chatbot_image)
 
 if __name__ == "__main__":
-    chat_to_your_data(param)
+    main(param)

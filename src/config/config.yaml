@@ -1,8 +1,8 @@
 
 # https://en.wikipedia.org/wiki/Lyon# OpenAI API key
 openai:
-  path_file_key: /home/jabascal/Projects/openai
-  name_file_key: openai_key.json 
+  path_file_key: 
+  name_file_key: #openai_key.json 
 
 # LLM
 llm:

@@ -24,8 +24,13 @@ def get_completion_from_messages(messages, model="gpt-3.5-turbo", temperature=0)
 
 # Retrieve and set API KEY
 def read_key_from_file(path_file, name_file_key):
-    with open(os.path.join(path_file, name_file_key), 'r') as f:
-        org_data = json.load(f)
-        
-    openai.organization = org_data['organization']
-    openai.api_key = org_data['api_key']
+    try:
+        with open(os.path.join(path_file, name_file_key), 'r') as f:
+            org_data = json.load(f)
+            
+        openai.organization = org_data['organization']
+        openai.api_key = org_data['api_key']
+        print("OpenAI API KEY set!")
+    except:
+        print("OpenAI API KEY not set!")
+        print("Please, provide up in the UI!")
