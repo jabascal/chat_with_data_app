@@ -20,7 +20,7 @@ import os
 import openai
 
 from utils.in_out_helper import load_config
-from utils.app import chat_to_your_data_ui
+from utils.app_helper import chat_to_your_data_ui
 from utils.openai_helper import read_key_from_file
 
 # Working directory
