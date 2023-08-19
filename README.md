@@ -1,3 +1,17 @@
+---
+title: Chat With Data App
+emoji: 📉
+colorFrom: red
+colorTo: pink
+sdk: gradio
+sdk_version: 3.40.1
+app_file: app.py
+pinned: false
+license: mit
+---
+
+Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+
 # Chat with data app
 Chatbot app to chat with any source of data (doc, URL, audio, ...) leveraging LLMs and LangChain. Current version has the following feautures:
 - LLMs: OpenAI GPT-3.5. It requires providing openai APY_KEY
