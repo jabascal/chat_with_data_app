@@ -13,6 +13,9 @@ license: mit
 # Chat with data app    
 [![Open in Spaces](https://badgen.net/static/open/on%20HFSpaces/cyan)](https://replit.com/@jabascal1/ytube-download?v=1)
 
+[![Open tutorial in Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/jabascal/chat_with_data_app/blob/main/notebook/chat_to_your_data_medium.ipynb)
+
+
 Chatbot app to chat with any source of data (doc, URL, audio, ...) leveraging LLMs and LangChain. Current version has the following feautures:
 - LLMs: OpenAI GPT-3.5. It requires providing openai APY_KEY
 - Data source: pdf, URL, youtube
