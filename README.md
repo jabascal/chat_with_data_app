@@ -10,9 +10,9 @@ pinned: false
 license: mit
 ---
 
-Test on Hugging Face Spaces [Chat With Data App](https://huggingface.co/spaces/abascal/chat_with_data_app)
+# Chat with data app    
+[![Open in Spaces](https://badgen.net/static/open/on%20HFSpaces/cyan)](https://replit.com/@jabascal1/ytube-download?v=1)
 
-# Chat with data app
 Chatbot app to chat with any source of data (doc, URL, audio, ...) leveraging LLMs and LangChain. Current version has the following feautures:
 - LLMs: OpenAI GPT-3.5. It requires providing openai APY_KEY
 - Data source: pdf, URL, youtube
