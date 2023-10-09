@@ -18,6 +18,8 @@ Chatbot app to chat with any source of data (doc, URL, audio, ...) leveraging LL
 - LLMs: OpenAI GPT-3.5. It requires providing openai APY_KEY
 - Data source: pdf, URL, youtube
 
+Read the bloc article in *Medium*: [Chat to any source of data with LangChain and OpenAI](https://medium.com/@juanabascal78/chat-to-any-source-of-data-with-langchain-and-openai-3677ecb8665d)
+
 ![](https://github.com/jabascal/chat_with_data_app/blob/main/figures/app_ui.png)
 
 This app has been inspired on DeepLearning AI course [LangChain:Chat with your data](https://www.deeplearning.ai/short-courses/langchain-chat-with-your-data)
